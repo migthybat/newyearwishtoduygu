@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mutlu Yıllar Sevgilim ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,400;1,600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, #fceae8 0%, #eb9486 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: #fff;
+            animation: fall linear infinite;
+            z-index: 2;
+            opacity: 0.8;
+        }
+        @keyframes fall { to { transform: translateY(100vh) rotate(360deg); } }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 50px 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 550px;
+            width: 90%;
+            z-index: 10;
+            box-shadow: 0 15px 45px rgba(235, 148, 134, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        h1 { 
+            font-family: 'Dancing Script', cursive;
+            color: #d64545; 
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+        }
+
+        .message {
+            color: #555;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .button {
+            background: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%);
+            color: white;
+            padding: 18px 45px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.3rem;
+            font-weight: 600;
+            transition: all 0.4s ease;
+        }
+
+        #photoSlideshow {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+        }
+        
+        .slide-img {
+            max-width: 85%;
+            max-height: 70%;
+            border: 8px solid #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 30px rgba(255,255,255,0.2);
+            animation: fadeIn 0.8s ease-in-out;
+            object-fit: contain;
+        }
+
+        .photo-note {
+            font-family: 'Dancing Script', cursive;
+            color: #fff;
+            font-size: 2.2rem;
+            margin-top: 25px;
+            text-align: center;
+            padding: 0 20px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .fade-to-black {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; opacity: 0; pointer-events: none;
+            transition: opacity 1.5s; z-index: 9999;
+        }
+        .fade-to-black.active { opacity: 1; }
+
+        #photoCollage {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: none; z-index: 100000; overflow: hidden;
+        }
+
+        .collage-photo {
+            position: absolute; width: 200px; height: 200px;
+            object-fit: cover; border: 4px solid white; border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop preload="auto">
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="fade-to-black" id="fadeOverlay"></div>
+    <div id="photoSlideshow"></div>
+    <div id="photoCollage"></div>
+
+    <div class="container" id="mainCard">
+        <h1>Mutlu Yıllar Sevgilim ❤️</h1>
+        <div class="message">
+            Yeni yılda beraber geçireceğimiz her anın, bir öncekinden daha özel olmasını diliyorum.<br><br>
+            <span id="yearLabel" style="color:#d64545; font-weight:bold; font-size:1.5rem;"></span> yılı bizim masalımızın en güzel sayfası olsun!
+        </div>
+        <div id="counter" class="hidden" style="font-size: 2.5rem; color: #d64545; font-family: 'Dancing Script'; margin: 20px;">3</div>
+        <button class="button" id="celebrateBtn" onclick="celebrate()">Buraya Tıkla ✨</button>
+    </div>
+
+    <script>
+        // Yılı 2026 olarak ayarla
+        document.getElementById('yearLabel').textContent = new Date().getFullYear();
+
+        const album = [
+            { url: 'https://i.ibb.co/0pf0M1yd/1.jpg', note: "Gülüşün dünyamı aydınlatıyor... ✨" },
+            { url: 'https://i.ibb.co/93zh997c/3.jpg', note: "Seninle her yer huzur dolu ❤️" },
+            { url: 'https://i.ibb.co/cXDdkVRR/4.jpg', note: "İyi ki varsın aşkım." },
+            { url: 'https://i.ibb.co/WNTRW9Xb/5.jpg', note: "Ellerini ilk kez tuttuğum anı unutamıyorum...🥰" },
+            { url: 'https://i.ibb.co/rfTDLVFh/6.jpg', note: "Seninle her şey çok daha güzel 😍" },
+            { url: 'https://i.ibb.co/HDyYyYyB/7.jpg', note: "Işığım sensin ✨" },
+            { url: 'https://i.ibb.co/G4pzG9Jp/8.jpg', note: "Nice mutlu senelere birtanem" },
+            { url: 'https://i.ibb.co/WpyVJc9s/9.jpg', note: "Hayatımın en güzel hikayesi..." },
+            { url: 'https://i.ibb.co/PGYscs8X/10.jpg', note: "En güzel hatıralarımızdan..." },
+            { url: 'https://i.ibb.co/8LKyQj3Z/11.jpg', note: "Seni çok seviyorum." },
+            { url: 'https://i.ibb.co/xrgHZ89/12.jpg', note: "Geleceğimiz aşkla dolsun." },
+            { url: 'https://i.ibb.co/pvkqGkQq/13.jpg', note: "Mutluluğumuz daim olsun." },
+            { url: 'https://i.ibb.co/7t30W3Jv/14.jpg', note: "Bütün dünyayı seninle gezmek istiyorum 🥰" },
+            { url: 'https://i.ibb.co/KxXwv5np/15.jpg', note: "Sonsuza kadar AŞK ile...❤️❤️❤️" }
+        ];
+
+        setInterval(() => {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.innerHTML = '❄';
+            snowflake.style.left = Math.random() * window.innerWidth + 'px';
+            snowflake.style.animationDuration = Math.random() * 3 + 3 + 's';
+            snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+            document.body.appendChild(snowflake);
+            setTimeout(() => snowflake.remove(), 6000);
+        }, 400);
+
+        function celebrate() {
+            const music = document.getElementById('bgMusic');
+            music.play().catch(e => console.log("Müzik başlatılamadı"));
+            
+            document.getElementById('celebrateBtn').style.display = 'none';
+            const counterEl = document.getElementById('counter');
+            counterEl.classList.remove('hidden');
+            
+            let count = 3;
+            const timer = setInterval(() => {
+                count--;
+                if(count > 0) counterEl.textContent = count;
+                else {
+                    clearInterval(timer);
+                    counterEl.textContent = 'Hikayemiz yeni başlıyor aşkım ❤️';
+                    setTimeout(() => {
+                        document.getElementById('fadeOverlay').classList.add('active');
+                        setTimeout(startSlideshow, 3000);
+                    }, 3000);
+                }
+            }, 1000);
+        }
+
+        function startSlideshow() {
+            const slideshow = document.getElementById('photoSlideshow');
+            document.getElementById('mainCard').style.display = 'none';
+            slideshow.style.display = 'flex';
+            let idx = 0;
+
+            function next() {
+                if(idx < album.length) {
+                    slideshow.innerHTML = `
+                        <img src="${album[idx].url}" class="slide-img">
+                        <div class="photo-note">${album[idx].note}</div>
+                    `;
+                    idx++;
+                    setTimeout(next, 5000); 
+                } else {
+                    showCollage();
+                }
+            }
+            next();
+        }
+
+        function showCollage() {
+            document.getElementById('photoSlideshow').style.display = 'none';
+            const collage = document.getElementById('photoCollage');
+            collage.style.display = 'block';
+
+            album.forEach((item, i) => {
+                setTimeout(() => {
+                    const img = document.createElement('img');
+                    img.src = item.url;
+                    img.className = 'collage-photo';
+                    img.style.left = Math.random() * (window.innerWidth - 200) + 'px';
+                    img.style.top = Math.random() * (window.innerHeight - 200) + 'px';
+                    img.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
+                    collage.appendChild(img);
+                }, i * 200);
+            });
+        }
+    </script>
+</body>
+</html>
